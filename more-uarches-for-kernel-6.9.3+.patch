@@ -1,0 +1,935 @@
+diff -ruN linux-original/arch/x86/Kconfig.cpu linux-patched/arch/x86/Kconfig.cpu
+--- linux-original/arch/x86/Kconfig.cpu	2024-06-15 23:58:07.059716729 -0700
++++ linux-patched/arch/x86/Kconfig.cpu	2024-06-16 00:31:46.917027240 -0700
+@@ -92,7 +92,7 @@
+ 	help
+ 	  Select this for Intel Pentium Pro chips.  This enables the use of
+ 	  Pentium Pro extended instructions, and disables the init-time guard
+-	  against the f00f bug found in earlier Pentiums.
++# 	  against the f00f bug found in earlier Pentiums.
+ 
+ config MPENTIUMII
+ 	bool "Pentium-II/Celeron(pre-Coppermine)"
+@@ -157,15 +157,15 @@
+ 
+ 
+ config MK6
+-	bool "K6/K6-II/K6-III"
++	bool "AMD K6/K6-II/K6-III"
+ 	depends on X86_32
+ 	help
+-	  Select this for an AMD K6-family processor.  Enables use of
++	  Select this for an AMD K6-family processor.  E/home/liveuser/Downloads/nables use of
+ 	  some extended instructions, and passes appropriate optimization
+ 	  flags to GCC.
+ 
+ config MK7
+-	bool "Athlon/Duron/K7"
++	bool "AMD Athlon/Duron/K7"
+ 	depends on X86_32
+ 	help
+ 	  Select this for an AMD Athlon K7-family processor.  Enables use of
+@@ -173,12 +173,113 @@
+ 	  flags to GCC.
+ 
+ config MK8
+-	bool "Opteron/Athlon64/Hammer/K8"
++	bool "AMD Opteron/Athlon64/Hammer/K8"
+ 	help
+ 	  Select this for an AMD Opteron or Athlon64 Hammer-family processor.
+ 	  Enables use of some extended instructions, and passes appropriate
+ 	  optimization flags to GCC.
+ 
++config MK8SSE3
++	bool "AMD Opteron/Athlon64/Hammer/K8 with SSE3"
++	help
++	  Select this for improved AMD Opteron or Athlon64 Hammer-family processors.
++	  Enables use of some extended instructions, and passes appropriate
++	  optimization flags to GCC.
++
++config MK10
++	bool "AMD 61xx/7x50/PhenomX3/X4/II/K10"
++	help
++	  Select this for an AMD 61xx Eight-Core Magny-Cours, Athlon X2 7x50,
++	  Phenom X3/X4/II, Athlon II X2/X3/X4, or Turion II-family processor.
++	  Enables use of some extended instructions, and passes appropriate
++	  optimization flags to GCC.
++
++config MBARCELONA
++	bool "AMD Barcelona"
++	help
++	  Select this for AMD Family 10h Barcelona processors.
++	  Enables -march=barcelona
++
++config MBOBCAT
++	bool "AMD Bobcat"
++	help
++	Select this for AMD Family 14h Bobcat processors.
++
++	  Enables -march=btver1
++
++config MJAGUAR
++	bool "AMD Jaguar"
++	help
++	  Select this for AMD Family 16h Jaguar processors.
++
++	  Enables -march=btver2
++
++config MBULLDOZER
++	bool "AMD Bulldozer"
++	help
++	  Select this for AMD Family 15h Bulldozer processors.
++
++	  Enables -march=bdver1
++
++config MPILEDRIVER
++	bool "AMD Piledriver"
++	help
++	  Select this for AMD Family 15h Piledriver processors.
++
++	  Enables -march=bdver2
++
++config MSTEAMROLLER
++	bool "AMD Steamroller"
++	help
++	  Select this for AMD Family 15h Steamroller processors.
++
++	  Enables -march=bdver3
++
++config MEXCAVATOR
++	bool "AMD Excavator"
++	help
++	  Select this for AMD Family 15h Excavator processors.
++
++	  Enables -march=bdver4
++
++config MZEN
++	bool "AMD Zen"
++	help
++	  Select this for AMD Family 17h Zen processors.
++
++	  Enables -march=znver1
++
++config MZEN2
++	bool "AMD Zen 2"
++	help
++	  Select this for AMD Family 17h Zen 2 processors.
++
++	  Enables -march=znver2
++
++config MZEN3
++	bool "AMD Zen 3"
++	depends on (CC_IS_GCC && GCC_VERSION >= 100300) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	help
++	  Select this for AMD Family 19h Zen 3 processors.
++
++	  Enables -march=znver3
++
++config MZEN4
++	bool "AMD Zen 4"
++	depends on (CC_IS_GCC && GCC_VERSION >= 130000) || (CC_IS_CLANG && CLANG_VERSION >= 160000)
++	help
++	  Select this for AMD Family 19h Zen 4 processors.
++
++	  Enables -march=znver4
++
++config MZEN5
++	bool "AMD Zen 5"
++	depends on (CC_IS_GCC && GCC_VERSION >= 130000) || (CC_IS_CLANG && CLANG_VERSION >= 160000)
++	help
++	  Select this for AMD Family 1ah Zen 5 processors.
++
++	  Enables -march=znver5
++
+ config MCRUSOE
+ 	bool "Crusoe"
+ 	depends on X86_32
+@@ -294,6 +395,314 @@
+ 	  Generic x86-64 CPU.
+ 	  Run equally well on all x86-64 CPUs.
+ 
++config MNEHALEM
++	bool "Intel Nehalem"
++	select X86_P6_NOP
++	help
++
++	  Select this for 1st Gen Core processors in the Nehalem family.
++
++	  Enables -march=nehalem
++
++config MWESTMERE
++	bool "Intel Westmere"
++	select X86_P6_NOP
++	help
++
++	  Select this for the Intel Westmere formerly Nehalem-C family.
++
++	  Enables -march=westmere
++
++config MSILVERMONT
++	bool "Intel Silvermont"
++	select X86_P6_NOP
++	help
++
++	  Select this for the Intel Silvermont platform.
++
++	  Enables -march=silvermont
++
++config MGOLDMONT
++	bool "Intel Goldmont"
++	select X86_P6_NOP
++	help
++
++	  Select this for the Intel Goldmont platform including Apollo Lake and Denverton.
++
++	  Enables -march=goldmont
++
++config MGOLDMONTPLUS
++	bool "Intel Goldmont Plus"
++	select X86_P6_NOP
++	help
++
++	  Select this for the Intel Goldmont Plus platform including Gemini Lake.
++
++	  Enables -march=goldmont-plus
++
++config MSANDYBRIDGE
++	bool "Intel Sandy Bridge"
++	select X86_P6_NOP
++	help
++
++	  Select this for 2nd Gen Core processors in the Sandy Bridge family.
++
++	  Enables -march=sandybridge
++
++config MIVYBRIDGE
++	bool "Intel Ivy Bridge"
++	select X86_P6_NOP
++	help
++
++	  Select this for 3rd Gen Core processors in the Ivy Bridge family.
++
++	  Enables -march=ivybridge
++
++config MHASWELL
++	bool "Intel Haswell"
++	select X86_P6_NOP
++	help
++
++	  Select this for 4th Gen Core processors in the Haswell family.
++
++	  Enables -march=haswell
++
++config MBROADWELL
++	bool "Intel Broadwell"
++	select X86_P6_NOP
++	help
++
++	  Select this for 5th Gen Core processors in the Broadwell family.
++
++	  Enables -march=broadwell
++
++config MSKYLAKE
++	bool "Intel Skylake"
++	select X86_P6_NOP
++	help
++
++	  Select this for 6th Gen Core processors in the Skylake family.
++
++	  Enables -march=skylake
++
++config MSKYLAKEX
++	bool "Intel Skylake X"
++	select X86_P6_NOP
++	help
++
++	  Select this for 6th Gen Core processors in the Skylake X family.
++
++	  Enables -march=skylake-avx512
++
++config MCANNONLAKE
++	bool "Intel Cannon Lake"
++	select X86_P6_NOP
++	help
++
++	  Select this for 8th Gen Core processors
++
++	  Enables -march=cannonlake
++
++config MICELAKE
++	bool "Intel Ice Lake"
++	select X86_P6_NOP
++	help
++
++	  Select this for 10th Gen Core processors in the Ice Lake family.
++
++	  Enables -march=icelake-client
++
++config MCASCADELAKE
++	bool "Intel Cascade Lake"
++	select X86_P6_NOP
++	help
++
++	  Select this for Xeon processors in the Cascade Lake family.
++
++	  Enables -march=cascadelake
++
++config MCOOPERLAKE
++	bool "Intel Cooper Lake"
++	depends on (CC_IS_GCC && GCC_VERSION > 100100) || (CC_IS_CLANG && CLANG_VERSION >= 100000)
++	select X86_P6_NOP
++	help
++
++	  Select this for Xeon processors in the Cooper Lake family.
++
++	  Enables -march=cooperlake
++
++config MTIGERLAKE
++	bool "Intel Tiger Lake"
++	depends on  (CC_IS_GCC && GCC_VERSION > 100100) || (CC_IS_CLANG && CLANG_VERSION >= 100000)
++	select X86_P6_NOP
++	help
++
++	  Select this for third-generation 10 nm process processors in the Tiger Lake family.
++
++	  Enables -march=tigerlake
++
++config MSAPPHIRERAPIDS
++	bool "Intel Sapphire Rapids"
++	depends on (CC_IS_GCC && GCC_VERSION > 110000) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	select X86_P6_NOP
++	help
++
++	  Select this for fourth-generation 10 nm process processors in the Sapphire Rapids family.
++
++	  Enables -march=sapphirerapids
++
++config MROCKETLAKE
++	bool "Intel Rocket Lake"
++	depends on (CC_IS_GCC && GCC_VERSION > 110000) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	select X86_P6_NOP
++	help
++
++	  Select this for eleventh-generation processors in the Rocket Lake family.
++
++	  Enables -march=rocketlake
++
++config MALDERLAKE
++	bool "Intel Alder Lake"
++	depends on (CC_IS_GCC && GCC_VERSION > 110000) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	select X86_P6_NOP
++	help
++
++	  Select this for twelfth-generation processors in the Alder Lake family.
++
++	  Enables -march=alderlake
++
++config MRAPTORLAKE
++	bool "Intel Raptor Lake"
++	depends on (CC_IS_GCC && GCC_VERSION >= 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for thirteenth-generation processors in the Raptor Lake family.
++
++	  Enables -march=raptorlake
++
++config MMETEORLAKE
++	bool "Intel Meteor Lake"
++	depends on (CC_IS_GCC && GCC_VERSION >= 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for fourteenth-generation processors in the Meteor Lake family.
++
++	  Enables -march=meteorlake
++
++config MARROWLAKE
++	bool "Intel Arrow Lake"
++	depends on (CC_IS_GCC && GCC_VERSION >= 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for fifthteen-generation processors in the Arrow Lake family.
++
++	  Enables -march=arrowlake
++
++config MARROWLAKES
++	bool "Intel Arrow Lake-S"
++	depends on (CC_IS_GCC && GCC_VERSION >= 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for fifthteen-generation processors in the Arrow Lake family.
++
++	  Enables -march=arrowlake-s
++
++
++config MEMERALDRAPIDS
++	bool "Intel Emerald Rapids"
++	depends on (CC_IS_GCC && GCC_VERSION > 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for fifth-generation 10 nm process processors in the Emerald Rapids family.
++
++	  Enables -march=emeraldrapids
++
++config MGRANITERAPIDS
++	bool "Intel Granite Rapids"
++	depends on (CC_IS_GCC && GCC_VERSION > 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for sixth-generation 3 nm process processors in the Granite Rapids family.
++
++	  Enables -march=graniterapids
++
++config MGRANITERAPIDSD
++	bool "Intel Granite Rapids-D"
++	depends on (CC_IS_GCC && GCC_VERSION > 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++
++	  Select this for sixth-generation 3 nm process processors in the Granite Rapids-D family.
++
++	  Enables -march=graniterapids-d
++
++config MSIERRAFOREST
++	bool "Intel Sierra Forest"
++	depends on (CC_IS_GCC && GCC_VERSION > 130000) || (CC_IS_CLANG && CLANG_VERSION >= 150500)
++	select X86_P6_NOP
++	help
++	
++	  Select this for sixth-generation 3 nm processors in the Sierra Forest family.
++
++	  Enables -march=sierraforest
++
++config GENERIC_CPU
++ 	bool "Generic-x86-64"
++ 	depends on X86_64
++	help
++ 	  Generic x86-64 CPU.
++ 	  Run equally well on all x86-64 CPUs.
++
++config GENERIC_CPU2
++	bool "Generic-x86-64-v2"
++	depends on (CC_IS_GCC && GCC_VERSION > 110000) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	depends on X86_64
++	help
++	  Generic x86-64 CPU.
++	  Run equally well on all x86-64 CPUs with min support of x86-64-v2.
++
++config GENERIC_CPU3
++	bool "Generic-x86-64-v3"
++	depends on (CC_IS_GCC && GCC_VERSION > 110000) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	depends on X86_64
++	help
++	  Generic x86-64-v3 CPU with v3 instructions.
++	  Run equally well on all x86-64 CPUs with min support of x86-64-v3.
++
++config GENERIC_CPU4
++	bool "Generic-x86-64-v4"
++	depends on (CC_IS_GCC && GCC_VERSION > 110000) || (CC_IS_CLANG && CLANG_VERSION >= 120000)
++	depends on X86_64
++	help
++	  Generic x86-64 CPU with v4 instructions.
++	  Run equally well on all x86-64 CPUs with min support of x86-64-v4.
++
++config MNATIVE_INTEL
++	bool "Intel-Native optimizations autodetected by the compiler"
++	help
++
++	  Clang 3.8, GCC 4.2 and above support -march=native, which automatically detects
++	  the optimum settings to use based on your processor. Do NOT use this
++	  for AMD CPUs.  Intel Only!
++
++	  Enables -march=native
++
++config MNATIVE_AMD
++	bool "AMD-Native optimizations autodetected by the compiler"
++	help
++
++  Clang 3.8, GCC 4.2 and above support -march=native, which automatically detects
++	  the optimum settings to use based on your processor. Do NOT use this
++	  for Intel CPUs.  AMD Only!
++
++	  Enables -march=native
++
+ endchoice
+ 
+ config X86_GENERIC
+@@ -318,9 +727,17 @@
+ config X86_L1_CACHE_SHIFT
+ 	int
+ 	default "7" if MPENTIUM4 || MPSC
+-	default "6" if MK7 || MK8 || MPENTIUMM || MCORE2 || MATOM || MVIAC7 || X86_GENERIC || GENERIC_CPU
++	default "6"  if MK7 || MK8 || MPENTIUMM || MCORE2 || MATOM || MVIAC7 || MK8SSE3 || MK10 \
++	|| MBARCELONA || MBOBCAT || MJAGUAR || MBULLDOZER || MPILEDRIVER || MSTEAMROLLER \
++	|| MEXCAVATOR || MZEN || MZEN2 || MZEN3 || MZEN4 || MZEN5 || MNEHALEM || MWESTMERE || MSILVERMONT \
++	|| MGOLDMONT || MGOLDMONTPLUS || MSANDYBRIDGE || MIVYBRIDGE || MHASWELL || MBROADWELL \
++	|| MSKYLAKE || MSKYLAKEX || MCANNONLAKE || MICELAKE || MCASCADELAKE || MCOOPERLAKE \
++	|| MTIGERLAKE || MSAPPHIRERAPIDS || MROCKETLAKE || MALDERLAKE || MRAPTORLAKE || MMETEORLAKE || MARROWLAKE || MARROWLAKES \
++	|| MEMERALDRAPIDS || MGRANITERAPIDS || MGRANITERAPIDSD || MNATIVE_INTEL || MNATIVE_AMD || X86_GENERIC || GENERIC_CPU || GENERIC_CPU2 \
++	|| GENERIC_CPU3 || GENERIC_CPU4
+ 	default "4" if MELAN || M486SX || M486 || MGEODEGX1
+-	default "5" if MWINCHIP3D || MWINCHIPC6 || MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODE_LX
++	default "5" if MWINCHIP3D || MWINCHIPC6 || MCRUSOE || MEFFICEON || MCYRIXIII || MK6 || MPENTIUMIII \
++	|| MPENTIUMII || M686 || M586MMX || M586TSC || M586 || MVIAC3_2 || MGEODE_LX
+ 
+ config X86_F00F_BUG
+ 	def_bool y
+@@ -340,7 +757,16 @@
+ 
+ config X86_USE_PPRO_CHECKSUM
+ 	def_bool y
+-	depends on MWINCHIP3D || MWINCHIPC6 || MCYRIXIII || MK7 || MK6 || MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MK8 || MVIAC3_2 || MVIAC7 || MEFFICEON || MGEODE_LX || MCORE2 || MATOM
++	depends on MWINCHIP3D || MWINCHIPC6 || MCYRIXIII || MK7 || MK6 || MPENTIUM4 || MPENTIUMM \
++	|| MPENTIUMIII || MPENTIUMII || M686 || MK8 || MVIAC3_2 || MVIAC7 || MEFFICEON || MGEODE_LX \
++	|| MCORE2 || MATOM || MK8SSE3 || MK10 || MBARCELONA || MBOBCAT || MJAGUAR || MBULLDOZER \
++	|| MPILEDRIVER || MSTEAMROLLER || MEXCAVATOR || MZEN || MZEN2 || MZEN3 || MZEN4 || MZEN5 || MNEHALEM \
++	|| MWESTMERE || MSILVERMONT || MGOLDMONT || MGOLDMONTPLUS || MSANDYBRIDGE || MIVYBRIDGE \
++	|| MHASWELL || MBROADWELL || MSKYLAKE || MSKYLAKEX || MCANNONLAKE || MICELAKE \
++	|| MCASCADELAKE || MCOOPERLAKE || MTIGERLAKE || MSAPPHIRERAPIDS || MROCKETLAKE \
++	|| MALDERLAKE || MRAPTORLAKE || MMETEORLAKE || MARROWLAKE || MARROWLAKES \
++	|| MEMERALDRAPIDS || MGRANITERAPIDS || MGRANITERAPIDSD || MNATIVE_INTEL || MNATIVE_AMD
++
+ 
+ #
+ # P6_NOPs are a relatively minor optimization that require a family >=
+@@ -356,11 +782,24 @@
+ config X86_P6_NOP
+ 	def_bool y
+ 	depends on X86_64
+-	depends on (MCORE2 || MPENTIUM4 || MPSC)
++	depends on (MCORE2 || MPENTIUM4 || MPSC || MNEHALEM || MWESTMERE || MSILVERMONT || MGOLDMONT \
++	|| MGOLDMONTPLUS || MSANDYBRIDGE || MIVYBRIDGE || MHASWELL || MBROADWELL || MSKYLAKE \
++	|| MSKYLAKEX || MCANNONLAKE || MICELAKE || MCASCADELAKE || MCOOPERLAKE || MTIGERLAKE \
++	|| MSAPPHIRERAPIDS || MROCKETLAKE || MALDERLAKE || MRAPTORLAKE || MMETEORLAKE || MARROWLAKE \
++	|| MARROWLAKES || MEMERALDRAPIDS || MGRANITERAPIDS || MGRANITERAPIDSD \
++	|| MNATIVE_INTEL)
+ 
+ config X86_TSC
+ 	def_bool y
+-	depends on (MWINCHIP3D || MCRUSOE || MEFFICEON || MCYRIXIII || MK7 || MK6 || MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || MK8 || MVIAC3_2 || MVIAC7 || MGEODEGX1 || MGEODE_LX || MCORE2 || MATOM) || X86_64
++	depends on (MWINCHIP3D || MCRUSOE || MEFFICEON || MCYRIXIII || MK7 || MK6 || MPENTIUM4 || MPENTIUMM \
++	|| MPENTIUMIII || MPENTIUMII || M686 || M586MMX || M586TSC || MK8 || MVIAC3_2 || MVIAC7 || MGEODEGX1 \
++	|| MGEODE_LX || MCORE2 || MATOM || MK8SSE3 || MK10 || MBARCELONA || MBOBCAT || MJAGUAR || MBULLDOZER \
++	|| MPILEDRIVER || MSTEAMROLLER || MEXCAVATOR || MZEN || MZEN2 || MZEN3 || MZEN4 || MZEN5 || MNEHALEM \
++	|| MWESTMERE || MSILVERMONT || MGOLDMONT || MGOLDMONTPLUS || MSANDYBRIDGE || MIVYBRIDGE || MHASWELL \
++	|| MBROADWELL || MSKYLAKE || MSKYLAKEX || MCANNONLAKE || MICELAKE || MCASCADELAKE || MCOOPERLAKE \
++	|| MTIGERLAKE || MSAPPHIRERAPIDS || MROCKETLAKE || MALDERLAKE || MRAPTORLAKE || MMETEORLAKE || MARROWLAKE \
++	|| MARROWLAKES || MEMERALDRAPIDS || MGRANITERAPIDS || MGRANITERAPIDSD \
++	|| MNATIVE_INTEL || MNATIVE_AMD) || X86_64
+ 
+ config X86_HAVE_PAE
+ 	def_bool y
+@@ -368,24 +807,43 @@
+ 
+ config X86_CMPXCHG64
+ 	def_bool y
+-	depends on X86_HAVE_PAE || M586TSC || M586MMX || MK6 || MK7
++	depends on X86_PAE || X86_64 || MCORE2 || MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 \
++	|| M586TSC || M586MMX || MATOM || MGEODE_LX || MGEODEGX1 || MK6 || MK7 || MK8 || MK8SSE3 || MK10 \
++	|| MBARCELONA || MBOBCAT || MJAGUAR || MBULLDOZER || MPILEDRIVER || MSTEAMROLLER || MEXCAVATOR || MZEN \
++	|| MZEN2 || MZEN3 || MZEN4 || MZEN5 || MNEHALEM || MWESTMERE || MSILVERMONT || MGOLDMONT || MGOLDMONTPLUS \
++	|| MSANDYBRIDGE || MIVYBRIDGE || MHASWELL || MBROADWELL || MSKYLAKE || MSKYLAKEX || MCANNONLAKE \
++	|| MICELAKE || MCASCADELAKE || MCOOPERLAKE || MTIGERLAKE || MSAPPHIRERAPIDS || MROCKETLAKE \
++	|| MALDERLAKE || MRAPTORLAKE || MMETEORLAKE || MARROWLAKE || MARROWLAKES || MEMERALDRAPIDS || MGRANITERAPIDS || MGRANITERAPIDSD || MNATIVE_INTEL || MNATIVE_AMD
+ 
+ # this should be set for all -march=.. options where the compiler
+ # generates cmov.
+ config X86_CMOV
+ 	def_bool y
+-	depends on (MK8 || MK7 || MCORE2 || MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MCRUSOE || MEFFICEON || X86_64 || MATOM || MGEODE_LX)
++	depends on (MK8 || MK7 || MCORE2 || MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 \
++	|| MVIAC3_2 || MVIAC7 || MCRUSOE || MEFFICEON || X86_64 || MATOM || MGEODE_LX || MK8SSE3 || MK10 \
++	|| MBARCELONA || MBOBCAT || MJAGUAR || MBULLDOZER || MPILEDRIVER || MSTEAMROLLER || MEXCAVATOR \
++	|| MZEN || MZEN2 || MZEN3 || MZEN4 || ZEN5 || MNEHALEM || MWESTMERE || MSILVERMONT || MGOLDMONT \
++	|| MGOLDMONTPLUS || MSANDYBRIDGE || MIVYBRIDGE || MHASWELL || MBROADWELL || MSKYLAKE || MSKYLAKEX \
++	|| MCANNONLAKE || MICELAKE || MCASCADELAKE || MCOOPERLAKE || MTIGERLAKE || MSAPPHIRERAPIDS \
++	|| MROCKETLAKE || MALDERLAKE || MRAPTORLAKE || MMETEORLAKE || MARROWLAKE || MARROWLAKES \
++	|| MGRANITERAPIDS || MGRANITERAPIDSD || MEMERALDRAPIDS || MNATIVE_INTEL || MNATIVE_AMD)
+ 
+ config X86_MINIMUM_CPU_FAMILY
+ 	int
+ 	default "64" if X86_64
+-	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 || MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCORE2 || MK7 || MK8)
+-	default "5" if X86_32 && X86_CMPXCHG64
+-	default "4"
++	default "6" if X86_32 && (MPENTIUM4 || MPENTIUMM || MPENTIUMIII || MPENTIUMII || M686 \
++	|| MVIAC3_2 || MVIAC7 || MEFFICEON || MATOM || MCORE2 || MK7 || MK8 ||  MK8SSE3 \
++	|| MK10 || MBARCELONA || MBOBCAT || MJAGUAR || MBULLDOZER || MPILEDRIVER || MSTEAMROLLER \
++	|| MEXCAVATOR || MZEN || MZEN2 || MZEN3 || MZEN4 || MZEN5 || MNEHALEM || MWESTMERE || MSILVERMONT \
++	|| MGOLDMONT || MGOLDMONTPLUS || MSANDYBRIDGE || MIVYBRIDGE || MHASWELL || MBROADWELL \
++	|| MSKYLAKE || MSKYLAKEX || MCANNONLAKE || MICELAKE || MCASCADELAKE || MCOOPERLAKE \
++	|| MTIGERLAKE || MSAPPHIRERAPIDS || MROCKETLAKE || MALDERLAKE || MRAPTORLAKE || MRAPTORLAKE \
++	|| MNATIVE_INTEL || MNATIVE_AMD)
+ 
+ config X86_DEBUGCTLMSR
+ 	def_bool y
+-	depends on !(MK6 || MWINCHIPC6 || MWINCHIP3D || MCYRIXIII || M586MMX || M586TSC || M586 || M486SX || M486) && !UML
++	depends on !(MK6 || MWINCHIPC6 || MWINCHIP3D || MCYRIXIII || M586MMX || M586TSC || M586 \
++	|| M486SX || M486) && !UML
+ 
+ config IA32_FEAT_CTL
+ 	def_bool y
+diff -ruN linux-original/arch/x86/Makefile linux-patched/arch/x86/Makefile
+--- linux-original/arch/x86/Makefile	2024-06-15 23:58:07.059716729 -0700
++++ linux-patched/arch/x86/Makefile	2024-06-16 00:27:30.888816220 -0700
+@@ -145,6 +145,137 @@
+         # However the standard kernel entry on x86-64 leaves the stack on an
+         # 8-byte boundary. If the compiler isn't informed about the actual
+         # alignment it will generate extra alignment instructions for the
++        # default alignment which keep the stack *mis*aligned.)
++endif
++ifdef CONFIG_CC_IS_CLANG
++RETPOLINE_CFLAGS	:= -mretpoline-external-thunk
++RETPOLINE_VDSO_CFLAGS	:= -mretpoline
++endif
++RETPOLINE_CFLAGS	+= $(call cc-option,-mindirect-branch-cs-prefix)
++
++ifdef CONFIG_MITIGATION_RETHUNK
++RETHUNK_CFLAGS		:= -mfunction-return=thunk-extern
++RETPOLINE_CFLAGS	+= $(RETHUNK_CFLAGS)
++endif
++
++export RETHUNK_CFLAGS
++export RETPOLINE_CFLAGS
++export RETPOLINE_VDSO_CFLAGS
++
++# For gcc stack alignment is specified with -mpreferred-stack-boundary,
++# clang has the option -mstack-alignment for that purpose.
++ifneq ($(call cc-option, -mpreferred-stack-boundary=4),)
++      cc_stack_align4 := -mpreferred-stack-boundary=2
++      cc_stack_align8 := -mpreferred-stack-boundary=3
++else ifneq ($(call cc-option, -mstack-alignment=16),)
++      cc_stack_align4 := -mstack-alignment=4
++      cc_stack_align8 := -mstack-alignment=8
++endif
++
++# How to compile the 16-bit code.  Note we always compile for -march=i386;
++# that way we can complain to the user if the CPU is insufficient.
++REALMODE_CFLAGS	:= -std=gnu11 -m16 -g -Os -DDISABLE_BRANCH_PROFILING -D__DISABLE_EXPORTS \
++		   -Wall -Wstrict-prototypes -march=i386 -mregparm=3 \
++		   -fno-strict-aliasing -fomit-frame-pointer -fno-pic \
++		   -mno-mmx -mno-sse $(call cc-option,-fcf-protection=none)
++
++REALMODE_CFLAGS += -ffreestanding
++REALMODE_CFLAGS += -fno-stack-protector
++REALMODE_CFLAGS += -Wno-address-of-packed-member
++REALMODE_CFLAGS += $(cc_stack_align4)
++REALMODE_CFLAGS += $(CLANG_FLAGS)
++ifdef CONFIG_CC_IS_CLANG
++REALMODE_CFLAGS += -Wno-gnu
++endif
++export REALMODE_CFLAGS
++
++# BITS is used as extension for files which are available in a 32 bit
++# and a 64 bit version to simplify shared Makefiles.
++# e.g.: obj-y += foo_$(BITS).o
++export BITS
++
++#
++# Prevent GCC from generating any FP code by mistake.
++#
++# This must happen before we try the -mpreferred-stack-boundary, see:
++#
++#    https://gcc.gnu.org/bugzilla/show_bug.cgi?id=53383
++#
++KBUILD_CFLAGS += -mno-sse -mno-mmx -mno-sse2 -mno-3dnow -mno-avx
++KBUILD_RUSTFLAGS += --target=$(objtree)/scripts/target.json
++KBUILD_RUSTFLAGS += -Ctarget-feature=-sse,-sse2,-sse3,-ssse3,-sse4.1,-sse4.2,-avx,-avx2
++
++ifeq ($(CONFIG_X86_KERNEL_IBT),y)
++#
++# Kernel IBT has S_CET.NOTRACK_EN=0, as such the compilers must not generate
++# NOTRACK prefixes. Current generation compilers unconditionally employ NOTRACK
++# for jump-tables, as such, disable jump-tables for now.
++#
++# (jump-tables are implicitly disabled by RETPOLINE)
++#
++#   https://gcc.gnu.org/bugzilla/show_bug.cgi?id=104816
++#
++KBUILD_CFLAGS += $(call cc-option,-fcf-protection=branch -fno-jump-tables)
++KBUILD_RUSTFLAGS += -Zcf-protection=branch -Zno-jump-tables
++else
++KBUILD_CFLAGS += $(call cc-option,-fcf-protection=none)
++endif
++
++ifeq ($(CONFIG_X86_32),y)
++        BITS := 32
++        UTS_MACHINE := i386
++        CHECKFLAGS += -D__i386__
++
++        KBUILD_AFLAGS += -m32
++        KBUILD_CFLAGS += -m32
++
++        KBUILD_CFLAGS += -msoft-float -mregparm=3 -freg-struct-return
++
++        # Never want PIC in a 32-bit kernel, prevent breakage with GCC built
++        # with nonstandard options
++        KBUILD_CFLAGS += -fno-pic
++
++        # Align the stack to the register width instead of using the default
++        # alignment of 16 bytes. This reduces stack usage and the number of
++        # alignment instructions.
++        KBUILD_CFLAGS += $(cc_stack_align4)
++
++        # CPU-specific tuning. Anything which can be shared with UML should go here.
++        include $(srctree)/arch/x86/Makefile_32.cpu
++        KBUILD_CFLAGS += $(cflags-y)
++
++        # temporary until string.h is fixed
++        KBUILD_CFLAGS += -ffreestanding
++
++    ifeq ($(CONFIG_STACKPROTECTOR),y)
++        ifeq ($(CONFIG_SMP),y)
++			KBUILD_CFLAGS += -mstack-protector-guard-reg=fs -mstack-protector-guard-symbol=__stack_chk_guard
++        else
++			KBUILD_CFLAGS += -mstack-protector-guard=global
++        endif
++    endif
++else
++        BITS := 64
++        UTS_MACHINE := x86_64
++        CHECKFLAGS += -D__x86_64__
++
++        KBUILD_AFLAGS += -m64
++        KBUILD_CFLAGS += -m64
++
++        # Align jump targets to 1 byte, not the default 16 bytes:
++        KBUILD_CFLAGS += $(call cc-option,-falign-jumps=1)
++
++        # Pack loops tightly as well:
++        KBUILD_CFLAGS += $(call cc-option,-falign-loops=1)
++
++        # Don't autogenerate traditional x87 instructions
++        KBUILD_CFLAGS += -mno-80387
++        KBUILD_CFLAGS += $(call cc-option,-mno-fp-ret-in-387)
++
++        # By default gcc and clang use a stack alignment of 16 bytes for x86.
++        # However the standard kernel entry on x86-64 leaves the stack on an
++        # 8-byte boundary. If the compiler isn't informed about the actual
++        # alignment it will generate extra alignment instructions for the
+         # default alignment which keep the stack *mis*aligned.
+         # Furthermore an alignment to the register width reduces stack usage
+         # and the number of alignment instructions.
+@@ -156,16 +287,108 @@
+         # FIXME - should be integrated in Makefile.cpu (Makefile_32.cpu)
+         cflags-$(CONFIG_MK8)		+= -march=k8
+         cflags-$(CONFIG_MPSC)		+= -march=nocona
+-        cflags-$(CONFIG_MCORE2)		+= -march=core2
+-        cflags-$(CONFIG_MATOM)		+= -march=atom
++        cflags-$(CONFIG_MK8SSE3)	+= -march=k8-sse3
++	cflags-$(CONFIG_MK10) 		+= -march=amdfam10
++	cflags-$(CONFIG_MBARCELONA) 	+= -march=barcelona
++        cflags-$(CONFIG_MBOBCAT) 	+= -march=btver1
++        cflags-$(CONFIG_MJAGUAR) 	+= -march=btver2
++        cflags-$(CONFIG_MBULLDOZER) 	+= -march=bdver1
++        cflags-$(CONFIG_MPILEDRIVER)	+= -march=bdver2 -mno-tbm
++        cflags-$(CONFIG_MSTEAMROLLER) 	+= -march=bdver3 -mno-tbm
++        cflags-$(CONFIG_MEXCAVATOR) 	+= -march=bdver4 -mno-tbm
++        cflags-$(CONFIG_MZEN) 		+= -march=znver1
++        cflags-$(CONFIG_MZEN2) 	+= -march=znver2
++        cflags-$(CONFIG_MZEN3)	+= -march=znver3
++        cflags-$(CONFIG_MZEN4) 	+= -march=znver4
++        cflags-$(CONFIG_MZEN5)	+= -march=znver5
++        cflags-$(CONFIG_MNATIVE_INTEL) += -march=native
++        cflags-$(CONFIG_MNATIVE_AMD) 	+= -march=native
++        cflags-$(CONFIG_MATOM) 	+= -march=bonnell
++        cflags-$(CONFIG_MCORE2) 	+= -march=core2
++	cflags-$(CONFIG_MNEHALEM) 	+= -march=nehalem
++        cflags-$(CONFIG_MWESTMERE) 	+= -march=westmere
++        cflags-$(CONFIG_MSILVERMONT) 	+= -march=silvermont
++	cflags-$(CONFIG_MGOLDMONT) 	+= -march=goldmont
++	cflags-$(CONFIG_MGOLDMONTPLUS) += -march=goldmont-plus
++	cflags-$(CONFIG_MSANDYBRIDGE) 	+= -march=sandybridge
++	cflags-$(CONFIG_MIVYBRIDGE) 	+= -march=ivybridge
++	cflags-$(CONFIG_MHASWELL) 	+= -march=haswell
++	cflags-$(CONFIG_MBROADWELL) 	+= -march=broadwell
++	cflags-$(CONFIG_MSKYLAKE) 	+= -march=skylake
++	cflags-$(CONFIG_MSKYLAKEX) 	+= -march=skylake-avx512
++	cflags-$(CONFIG_MCANNONLAKE) 	+= -march=cannonlake
++	cflags-$(CONFIG_MICELAKE) 	+= -march=icelake-client
++	cflags-$(CONFIG_MCASCADELAKE) 	+= -march=cascadelake
++	cflags-$(CONFIG_MCOOPERLAKE) 	+= -march=cooperlake
++	cflags-$(CONFIG_MTIGERLAKE) 	+= -march=tigerlake
++	cflags-$(CONFIG_MSAPPHIRERAPIDS) += -march=sapphirerapids
++	cflags-$(CONFIG_MROCKETLAKE) 	+= -march=rocketlake
++	cflags-$(CONFIG_MALDERLAKE) 	+= -march=alderlake
++	cflags-$(CONFIG_MRAPTORLAKE) 	+= -march=raptorlake
++	cflags-$(CONFIG_MMETEORLAKE) 	+= -march=meteorlake
++	cflags-$(CONFIG_MARROWLAKE)	+= -march=arrowlake
++	cflags-$(CONFIG_MARROWLAKES)	+= -march=arrowlake-s
++	cflags-$(CONFIG_MEMERALDRAPIDS)	+= -march=emeraldrapids
++	cflags-$(CONFIG_MGRANITERAPIDS)	+= -march=graniterapids
++	cflags-$(CONFIG_MGRANITERAPIDSD)	+= -march=graniterapids-d
++	cflags-$(CONFIG_MSIERRAFOREST)	+= -march=sierraforest
++	cflags-$(CONFIG_GENERIC_CPU2) 	+= -march=x86-64-v2
++	cflags-$(CONFIG_GENERIC_CPU3) 	+= -march=x86-64-v3
++	cflags-$(CONFIG_GENERIC_CPU4) 	+= -march=x86-64-v4m
+         cflags-$(CONFIG_GENERIC_CPU)	+= -mtune=generic
+         KBUILD_CFLAGS += $(cflags-y)
+ 
+         rustflags-$(CONFIG_MK8)		+= -Ctarget-cpu=k8
+-        rustflags-$(CONFIG_MPSC)	+= -Ctarget-cpu=nocona
+-        rustflags-$(CONFIG_MCORE2)	+= -Ctarget-cpu=core2
+-        rustflags-$(CONFIG_MATOM)	+= -Ctarget-cpu=atom
+-        rustflags-$(CONFIG_GENERIC_CPU)	+= -Ztune-cpu=generic
++	rustflags-$(CONFIG_MPSC)	+= -Ctarget-cpu=nocona
++	rustflags-$(CONFIG_MK8SSE3)	+= -Ctarget-cpu=k8-sse3
++	rustflags-$(CONFIG_MK10)	+= -Ctarget-cpu=amdfam10
++	rustflags-$(CONFIG_MBARCELONA)	+= -Ctarget-cpu=barcelona
++	rustflags-$(CONFIG_MBOBCAT)	+= -Ctarget-cpu=btver1
++	rustflags-$(CONFIG_MJAGUAR)	+= -Ctarget-cpu=btver2
++	rustflags-$(CONFIG_MBULLDOZER)	+= -Ctarget-cpu=bdver1
++	rustflags-$(CONFIG_MPILEDRIVER)	+= -Ctarget-cpu=bdver2
++	rustflags-$(CONFIG_MSTEAMROLLER)	+= -Ctarget-cpu=bdver3
++	rustflags-$(CONFIG_MEXCAVATOR)	+= -Ctarget-cpu=bdver4
++	rustflags-$(CONFIG_MZEN)	+= -Ctarget-cpu=znver1
++	rustflags-$(CONFIG_MZEN2)	+= -Ctarget-cpu=znver2
++	rustflags-$(CONFIG_MZEN3)	+= -Ctarget-cpu=znver3
++	rustflags-$(CONFIG_MZEN4)	+= -Ctarget-cpu=znver4
++	rustflags-$(CONFIG_MZEN5)	+= -Ctarget-cpu=znver5
++	rustflags-$(CONFIG_MNATIVE_INTEL)	+= -Ctarget-cpu=native
++	rustflags-$(CONFIG_MNATIVE_AMD)	+= -Ctarget-cpu=native
++	rustflags-$(CONFIG_MATOM)	+= -Ctarget-cpu=bonnell
++	rustflags-$(CONFIG_MCORE2)	+= -Ctarget-cpu=core2
++	rustflags-$(CONFIG_MNEHALEM)	+= -Ctarget-cpu=nehalem
++	rustflags-$(CONFIG_MWESTMERE)	+= -Ctarget-cpu=westmere
++	rustflags-$(CONFIG_MSILVERMONT)	+= -Ctarget-cpu=silvermont
++	rustflags-$(CONFIG_MGOLDMONT)	+= -Ctarget-cpu=goldmont
++	rustflags-$(CONFIG_MGOLDMONTPLUS)	+= -Ctarget-cpu=goldmont-plus
++	rustflags-$(CONFIG_MSANDYBRIDGE)	+= -Ctarget-cpu=sandybridge
++	rustflags-$(CONFIG_MIVYBRIDGE)	+= -Ctarget-cpu=ivybridge
++	rustflags-$(CONFIG_MHASWELL)	+= -Ctarget-cpu=haswell
++	rustflags-$(CONFIG_MBROADWELL)	+= -Ctarget-cpu=broadwell
++	rustflags-$(CONFIG_MSKYLAKE)	+= -Ctarget-cpu=skylake
++	rustflags-$(CONFIG_MSKYLAKEX)	+= -Ctarget-cpu=skylake-avx512
++	rustflags-$(CONFIG_MCANNONLAKE)	+= -Ctarget-cpu=cannonlake
++	rustflags-$(CONFIG_MICELAKE)	+= -Ctarget-cpu=icelake-client
++	rustflags-$(CONFIG_MCASCADELAKE)	+= -Ctarget-cpu=cascadelake
++	rustflags-$(CONFIG_MCOOPERLAKE)	+= -Ctarget-cpu=cooperlake
++	rustflags-$(CONFIG_MTIGERLAKE)	+= -Ctarget-cpu=tigerlake
++	rustflags-$(CONFIG_MSAPPHIRERAPIDS)	+= -Ctarget-cpu=sapphirerapids
++	rustflags-$(CONFIG_MROCKETLAKE)	+= -Ctarget-cpu=rocketlake
++	rustflags-$(CONFIG_MALDERLAKE)	+= -Ctarget-cpu=alderlake
++	rustflags-$(CONFIG_MRAPTORLAKE)	+= -Ctarget-cpu=raptorlake
++	rustflags-$(CONFIG_MMETEORLAKE)	+= -Ctarget-cpu=meteorlake
++	rustflags-$(CONFIG_MARROWLAKE)	+= -Ctarget-cpu=arrowlake
++	rustflags-$(CONFIG_MARROWLAKES)	+= -Ctarget-cpu=arrowlake-s
++	rustflags-$(CONFIG_MEMERALDRAPIDS)	+= -Ctarget-cpu=emeraldrapids
++	rustflags-$(CONFIG_MGRANITERAPIDS)	+= -Ctarget-cpu=graniterapids
++	rustflags-$(CONFIG_MGRANITERAPIDSD)	+= -Ctarget-cpu=graniterapids-d
++	rustflags-$(CONFIG_MSIERRAFOREST)	+= -Ctarget-cpu=sierraforest
++	rustflags-$(CONFIG_GENERIC_CPU2)	+= -Ctarget-cpu=x86-64-v2
++	rustflags-$(CONFIG_GENERIC_CPU3)	+= -Ctarget-cpu=x86-64-v3
++	rustflags-$(CONFIG_GENERIC_CPU4)	+= -Ctarget-cpu=x86-64-v4m
++	rustflags-$(CONFIG_GENERIC_CPU)	+= -Ztune-cpu=generic
+         KBUILD_RUSTFLAGS += $(rustflags-y)
+ 
+         KBUILD_CFLAGS += -mno-red-zone
+diff -ruN linux-original/arch/x86/include/asm/vermagic.h linux-patched/arch/x86/include/asm/vermagic.h
+--- linux-original/arch/x86/include/asm/vermagic.h	2024-06-15 23:58:07.046383312 -0700
++++ linux-patched/arch/x86/include/asm/vermagic.h	2024-06-16 00:32:43.397369637 -0700
+@@ -17,6 +17,64 @@
+ #define MODULE_PROC_FAMILY "586MMX "
+ #elif defined CONFIG_MCORE2
+ #define MODULE_PROC_FAMILY "CORE2 "
++#elif defined CONFIG_MNATIVE_INTEL
++#define MODULE_PROC_FAMILY "NATIVE_INTEL "
++#elif defined CONFIG_MNATIVE_AMD
++#define MODULE_PROC_FAMILY "NATIVE_AMD "
++#elif defined CONFIG_MNEHALEM
++#define MODULE_PROC_FAMILY "NEHALEM "
++#elif defined CONFIG_MWESTMERE
++#define MODULE_PROC_FAMILY "WESTMERE "
++#elif defined CONFIG_MSILVERMONT
++#define MODULE_PROC_FAMILY "SILVERMONT "
++#elif defined CONFIG_MGOLDMONT
++#define MODULE_PROC_FAMILY "GOLDMONT "
++#elif defined CONFIG_MGOLDMONTPLUS
++#define MODULE_PROC_FAMILY "GOLDMONTPLUS "
++#elif defined CONFIG_MSANDYBRIDGE
++#define MODULE_PROC_FAMILY "SANDYBRIDGE "
++#elif defined CONFIG_MIVYBRIDGE
++#define MODULE_PROC_FAMILY "IVYBRIDGE "
++#elif defined CONFIG_MHASWELL
++#define MODULE_PROC_FAMILY "HASWELL "
++#elif defined CONFIG_MBROADWELL
++#define MODULE_PROC_FAMILY "BROADWELL "
++#elif defined CONFIG_MSKYLAKE
++#define MODULE_PROC_FAMILY "SKYLAKE "
++#elif defined CONFIG_MSKYLAKEX
++#define MODULE_PROC_FAMILY "SKYLAKEX "
++#elif defined CONFIG_MCANNONLAKE
++#define MODULE_PROC_FAMILY "CANNONLAKE "
++#elif defined CONFIG_MICELAKE
++#define MODULE_PROC_FAMILY "ICELAKE "
++#elif defined CONFIG_MCASCADELAKE
++#define MODULE_PROC_FAMILY "CASCADELAKE "
++#elif defined CONFIG_MCOOPERLAKE
++#define MODULE_PROC_FAMILY "COOPERLAKE "
++#elif defined CONFIG_MTIGERLAKE
++#define MODULE_PROC_FAMILY "TIGERLAKE "
++#elif defined CONFIG_MSAPPHIRERAPIDS
++#define MODULE_PROC_FAMILY "SAPPHIRERAPIDS "
++#elif defined CONFIG_ROCKETLAKE
++#define MODULE_PROC_FAMILY "ROCKETLAKE "
++#elif defined CONFIG_MALDERLAKE
++#define MODULE_PROC_FAMILY "ALDERLAKE "
++#elif defined CONFIG_MRAPTORLAKE
++#define MODULE_PROC_FAMILY "RAPTORLAKE "
++#elif defined CONFIG_MMETEORLAKE
++#define MODULE_PROC_FAMILY "METEORLAKE "
++#elif defined CONFIG_MARROWLAKE
++#define MODULE_PROC_FAMILY "ARROWLAKE "
++#elif defined CONFIG_MARROWLAKES
++#define MODULE_PROC_FAMILY "ARROWLAKES "
++#elif defined CONFIG_MEMERALDRAPIDS
++#define MODULE_PROC_FAMILY "EMERALDRAPIDS "
++#elif defined CONFIG_MGRANITERAPIDS
++#define MODULE_PROC_FAMILY "GRANITERAPIDS "
++#elif defined CONFIG_MGRANITERAPIDSD
++#define MODULE_PROC_FAMILY "GRANITERAPIDSD"
++#elif defined CONFIG_MSIERRAFOREST
++#define MODULE_PROC_FAMILY "SIERRAFOREST"
+ #elif defined CONFIG_MATOM
+ #define MODULE_PROC_FAMILY "ATOM "
+ #elif defined CONFIG_M686
+@@ -35,6 +93,34 @@
+ #define MODULE_PROC_FAMILY "K7 "
+ #elif defined CONFIG_MK8
+ #define MODULE_PROC_FAMILY "K8 "
++#elif defined CONFIG_MK8SSE3
++#define MODULE_PROC_FAMILY "K8SSE3 "
++#elif defined CONFIG_MK10
++#define MODULE_PROC_FAMILY "K10 "
++#elif defined CONFIG_MBARCELONA
++#define MODULE_PROC_FAMILY "BARCELONA "
++#elif defined CONFIG_MBOBCAT
++#define MODULE_PROC_FAMILY "BOBCAT "
++#elif defined CONFIG_MBULLDOZER
++#define MODULE_PROC_FAMILY "BULLDOZER "
++#elif defined CONFIG_MPILEDRIVER
++#define MODULE_PROC_FAMILY "PILEDRIVER "
++#elif defined CONFIG_MSTEAMROLLER
++#define MODULE_PROC_FAMILY "STEAMROLLER "
++#elif defined CONFIG_MJAGUAR
++#define MODULE_PROC_FAMILY "JAGUAR "
++#elif defined CONFIG_MEXCAVATOR
++#define MODULE_PROC_FAMILY "EXCAVATOR "
++#elif defined CONFIG_MZEN
++#define MODULE_PROC_FAMILY "ZEN "
++#elif defined CONFIG_MZEN2
++#define MODULE_PROC_FAMILY "ZEN2 "
++#elif defined CONFIG_MZEN3
++#define MODULE_PROC_FAMILY "ZEN3 "
++#elif defined CONFIG_MZEN4
++#define MODULE_PROC_FAMILY "ZEN4 "
++#elif defined CONFIG_MZEN5
++#define MODULE_PROC_FAMILY "ZEN5 "
+ #elif defined CONFIG_MELAN
+ #define MODULE_PROC_FAMILY "ELAN "
+ #elif defined CONFIG_MCRUSOE
